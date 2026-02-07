@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     const result = EmailSchema.safeParse(body);
 
     if (!result.success) {
-      return NextResponse.json({ error: result.error.errors?.[0]?.message || "Invalid email format" }, { status: 400 });
+      return NextResponse.json({ error: result.error.issues?.[0]?.message || "Invalid email format" }, { status: 400 });
     }
 
     const { email } = result.data;
