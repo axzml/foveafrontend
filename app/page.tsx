@@ -23,7 +23,7 @@ export default function Home() {
       {/* 5. 底部版权 & 再次呼应 */}
       <footer className="py-20 text-center border-t border-[#1A1A1A]">
         <p className="text-[#333] font-mono text-xs tracking-widest">
-          © 2026 FOVEA LABS. ALL RIGHTS RESERVED.
+          © 2026 FOVEA AI. ALL RIGHTS RESERVED.
         </p>
       </footer>
     </main>
