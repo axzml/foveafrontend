@@ -1,9 +1,38 @@
 'use client';
 
+import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
+import LocaleSwitcher from './LocaleSwitcher';
+import type { SiteCopy } from '../lib/site-copy';
+import type { Locale } from '../lib/site-locale';
 
-const Hero = () => {
+type HeroProps = {
+  locale: Locale;
+  copy: SiteCopy["home"]["hero"];
+  localeLabel: string;
+  englishLabel: string;
+  chineseLabel: string;
+  privacyLinkLabel: string;
+  downloadHref: string;
+};
+
+const toolOptions = [
+  'VS Code / IDE',
+  'Chrome / Browser',
+  'Terminal',
+  'Jupyter / Colab',
+  'Notion / Docs',
+  'Office / Google Workspace',
+  'Zotero / Reference Manager',
+  'TradingView / Trading',
+  'Figma / Design Tools',
+  'Slack / Teams',
+  'GitHub / GitLab',
+  'Other',
+];
+
+const Hero = ({ locale, copy, localeLabel, englishLabel, chineseLabel, privacyLinkLabel, downloadHref }: HeroProps) => {
   // 状态检查：确保组件已在客户端挂载，解决 Hydration 报错
   const [mounted, setMounted] = useState(false);
 
@@ -64,17 +93,17 @@ const Hero = () => {
         setStatus('success');
         const isDev = data.message?.includes('Development Mode');
         setMessage(isDev 
-          ? "✅ 表单验证成功！（开发模式，未连接数据库）" 
-          : "Welcome to the alpha! You're on the list."
+          ? copy.successDev
+          : copy.successLive
         );
         setEmail("");
         setRole("");
         setTools([]);
         setAiFrequency("");
-      } catch (err: any) {
+      } catch (err: unknown) {
         // 错误处理：将捕获到的 Error 对象信息显示给用户
         setStatus('error');
-        setMessage(err.message);
+        setMessage(err instanceof Error ? err.message : copy.errorFallback);
       }
   };
 
@@ -107,23 +136,33 @@ const Hero = () => {
 
       {/* 2. Hero Content */}
       <div className="relative z-10 w-full max-w-4xl mx-auto">
+        <div className="mb-6 flex justify-center md:justify-end">
+          <LocaleSwitcher
+            currentLocale={locale}
+            englishHref="/"
+            chineseHref="/zh"
+            englishLabel={englishLabel}
+            chineseLabel={chineseLabel}
+            label={localeLabel}
+          />
+        </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
           <span className="inline-block px-3 py-1 mb-4 text-xs font-mono tracking-widest text-[#00FFC2] border border-[#00FFC2]/30 rounded-full bg-[#00FFC2]/5">
-            ALPHA ACCESS NOW OPEN
+            {copy.badge}
           </span>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#EDEDED] mb-4">
-            The AI Interface That <br />
+            {copy.titleLine1} <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00FFC2] to-[#00A3FF]">
-              Follows Your Gaze.
+              {copy.titleHighlight}
             </span>
           </h1>
           <p className="text-base md:text-lg text-[#888888] max-w-2xl mx-auto mb-6 font-light leading-relaxed">
-            Stop explaining context. Fovea tracks your attention in real-time to bridge the gap between your intent and LLM execution.
-            <span className="text-[#EDEDED]"> High-bandwidth interaction is here.</span>
+            {copy.subtitle}
+            <span className="text-[#EDEDED]"> {copy.subtitleStrong}</span>
           </p>
         </motion.div>
 
@@ -143,7 +182,7 @@ const Hero = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email..."
+                    placeholder={copy.emailPlaceholder}
                     className="w-full bg-[#1A1A1A]/50 border border-[#333] px-6 py-4 rounded-xl text-[#EDEDED] placeholder-[#555] focus:outline-none focus:border-[#00FFC2] transition-all duration-300 backdrop-blur-md"
                     disabled={status === 'loading'}
                   />
@@ -158,15 +197,12 @@ const Hero = () => {
                     className="w-full bg-[#1A1A1A]/50 border border-[#333] px-6 py-4 rounded-xl text-[#EDEDED] focus:outline-none focus:border-[#00FFC2] transition-all duration-300 backdrop-blur-md appearance-none cursor-pointer"
                     disabled={status === 'loading'}
                   >
-                    <option value="" className="bg-[#1A1A1A]">Which option best describes you? *</option>
-                    <option value="developer" className="bg-[#1A1A1A]">Developer / Engineer</option>
-                    <option value="data-scientist" className="bg-[#1A1A1A]">Data Scientist / AI Engineer</option>
-                    <option value="product-manager" className="bg-[#1A1A1A]">Product Manager</option>
-                    <option value="student-researcher" className="bg-[#1A1A1A]">Student / Researcher</option>
-                    <option value="trader" className="bg-[#1A1A1A]">Trader / Analyst</option>
-                    <option value="designer" className="bg-[#1A1A1A]">Designer / Creator</option>
-                    <option value="founder" className="bg-[#1A1A1A]">Founder / Entrepreneur</option>
-                    <option value="other" className="bg-[#1A1A1A]">Other</option>
+                    <option value="" className="bg-[#1A1A1A]">{copy.rolePlaceholder}</option>
+                    {copy.roleOptions.map((option) => (
+                      <option key={option.value} value={option.value} className="bg-[#1A1A1A]">
+                        {option.label}
+                      </option>
+                    ))}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-6 text-[#555]">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -177,22 +213,9 @@ const Hero = () => {
 
                 {/* Tools (Optional) */}
                 <div className="relative w-full">
-                  <p className="text-[#888] text-xs mb-1.5">Which tools do you use most often? (Optional)</p>
+                  <p className="text-[#888] text-xs mb-1.5">{copy.toolsLabel}</p>
                   <div className="grid grid-cols-2 gap-1.5">
-                    {[
-                      'VS Code / IDE',
-                      'Chrome / Browser', 
-                      'Terminal',
-                      'Jupyter / Colab',
-                      'Notion / Docs',
-                      'Office / Google Workspace',
-                      'Zotero / Reference Manager',
-                      'TradingView / Trading',
-                      'Figma / Design Tools',
-                      'Slack / Teams',
-                      'GitHub / GitLab',
-                      'Other'
-                    ].map((tool) => (
+                    {toolOptions.map((tool) => (
                       <label key={tool} className="flex items-center gap-2 cursor-pointer group">
                         <input
                           type="checkbox"
@@ -215,14 +238,9 @@ const Hero = () => {
 
                 {/* AI Frequency (Optional) */}
                 <div className="relative w-full">
-                  <p className="text-[#888] text-xs mb-1.5">How often do you use AI tools? (Optional)</p>
+                  <p className="text-[#888] text-xs mb-1.5">{copy.aiFrequencyLabel}</p>
                   <div className="flex flex-col gap-1.5">
-                    {[
-                      { value: 'multiple-daily', label: 'Multiple times daily' },
-                      { value: 'daily', label: 'Once daily' },
-                      { value: 'weekly', label: 'Few times a week' },
-                      { value: 'rarely', label: 'Rarely / Just exploring' }
-                    ].map((freq) => (
+                    {copy.aiFrequencyOptions.map((freq) => (
                       <label key={freq.value} className="flex items-center gap-2 cursor-pointer group">
                         <input
                           type="radio"
@@ -245,7 +263,7 @@ const Hero = () => {
                   disabled={status === 'loading'}
                   className="w-full whitespace-nowrap bg-[#00FFC2] text-[#050505] font-bold px-8 py-4 rounded-xl hover:shadow-[0_0_25px_rgba(0,255,194,0.5)] transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {status === 'loading' ? 'Subscribing...' : 'Request Access'}
+                  {status === 'loading' ? copy.submitLoading : copy.submitIdle}
                 </button>
             </form>
 
@@ -262,8 +280,18 @@ const Hero = () => {
 
             {/* 隐私说明 */}
             <p className="mt-3 text-xs text-[#555] text-center leading-relaxed">
-              By submitting, you agree to our Privacy Policy. We collect your role, tools, and <br className="hidden md:block" />
-              approximate location (country/city) to understand our user base and prioritize regional support.
+              {copy.privacyNotePrefix}{" "}
+              <Link href="/privacy" className="text-[#888] underline decoration-[#00FFC2]/40 underline-offset-2 hover:text-[#EDEDED]">
+                {privacyLinkLabel}
+              </Link>{" "}
+              {copy.privacyNoteSuffix}
+            </p>
+
+            <p className="mt-4 text-sm text-[#777] text-center">
+              {copy.approvedPrompt}{" "}
+              <Link href={downloadHref} className="text-[#EDEDED] underline decoration-[#00FFC2]/50 underline-offset-4 hover:text-[#00FFC2]">
+                {copy.approvedLink}
+              </Link>
             </p>
 
             {/* 滚动指示器 - 放在表单内 */}
@@ -286,7 +314,7 @@ const Hero = () => {
                   </svg>
                 </div>
               </div>
-              <span className="text-[#00FFC2] text-sm font-mono tracking-widest font-semibold">SEE DEMO</span>
+              <span className="text-[#00FFC2] text-sm font-mono tracking-widest font-semibold">{copy.demoCta}</span>
             </motion.div>
           </div>
         </motion.div>

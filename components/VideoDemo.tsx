@@ -1,8 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import type { SiteCopy } from '../lib/site-copy';
 
-const VideoDemo = () => {
+type VideoDemoProps = {
+  copy: SiteCopy["home"]["video"];
+};
+
+const VideoDemo = ({ copy }: VideoDemoProps) => {
   return (
     <section className="py-24 bg-[#050505] flex flex-col items-center">
       <motion.div
@@ -18,7 +23,7 @@ const VideoDemo = () => {
             <div className="w-2 h-2 rounded-full bg-[#ff5f57]" />
             <div className="w-2 h-2 rounded-full bg-[#febc2e]" />
             <div className="w-2 h-2 rounded-full bg-[#28c840]" />
-            <div className="ml-4 text-[10px] font-mono text-[#555] tracking-widest uppercase">Fovea Intelligence Engine v0.1.0</div>
+            <div className="ml-4 text-[10px] font-mono text-[#555] tracking-widest uppercase">{copy.windowTitle}</div>
           </div>
 
           {/* 视频主体 */}
@@ -42,7 +47,10 @@ const VideoDemo = () => {
         {/* 视频下方文字说明 */}
         <div className="mt-8 text-center">
           <p className="text-[#555] font-mono text-sm tracking-widest uppercase">
-            Real-time Gaze Interaction Analysis
+            {copy.caption}
+          </p>
+          <p className="mt-3 text-sm text-[#666]">
+            {copy.note}
           </p>
         </div>
       </motion.div>

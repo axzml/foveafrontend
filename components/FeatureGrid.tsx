@@ -2,31 +2,20 @@
 
 import { Eye, Zap, Layers, Infinity } from 'lucide-react';
 import { motion } from 'framer-motion';
+import type { SiteCopy } from '../lib/site-copy';
 
-const features = [
-  {
-    title: "Gaze-Aware Context",
-    description: "Fovea perceives your focus area. No more manual copy-pasting to explain what you're looking at.",
-    icon: <Eye className="w-6 h-6 text-[#00FFC2]" />,
-  },
-  {
-    title: "Intent Engine",
-    description: "High-bandwidth resolution of pronouns like 'this' or 'here' into executable commands.",
-    icon: <Zap className="w-6 h-6 text-[#00FFC2]" />,
-  },
-  {
-    title: "Seamless Continuity",
-    description: "Your AI context follows your flow across different software environments.",
-    icon: <Layers className="w-6 h-6 text-[#00FFC2]" />,
-  },
-  {
-    title: "Unified Subscription",
-    description: "One sub for all plugins across VS Code, Chrome, and your Terminal.",
-    icon: <Infinity className="w-6 h-6 text-[#00FFC2]" />,
-  }
-];
+type FeatureGridProps = {
+  features: SiteCopy["home"]["featureGrid"];
+};
 
-const FeatureGrid = () => {
+const FeatureGrid = ({ features }: FeatureGridProps) => {
+  const icons = [
+    <Zap key="voice" className="w-6 h-6 text-[#00FFC2]" />,
+    <Layers key="assembly" className="w-6 h-6 text-[#00FFC2]" />,
+    <Infinity key="ai" className="w-6 h-6 text-[#00FFC2]" />,
+    <Eye key="capture" className="w-6 h-6 text-[#00FFC2]" />,
+  ];
+
   return (
     <section className="py-24 bg-[#050505] px-6">
       <div className="max-w-5xl mx-auto">
@@ -42,7 +31,7 @@ const FeatureGrid = () => {
 
               <div className="relative z-10 flex flex-col flex-1">
                 <div className="mb-4 inline-block p-2 rounded-lg bg-[#050505] border border-[#333] w-fit">
-                  {f.icon}
+                  {icons[i]}
                 </div>
                 <h3 className="text-xl font-bold text-[#EDEDED] mb-3">{f.title}</h3>
                 <p className="text-[#888888] text-sm leading-relaxed">{f.description}</p>
