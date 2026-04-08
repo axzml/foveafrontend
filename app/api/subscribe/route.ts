@@ -67,19 +67,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Success (Development Mode)" }, { status: 200 });
     }
 
-    // --- 1. 查重逻辑：直接利用数据库查询 ---
-    // ilike 是大小写不敏感的查询，完美替代你之前的 .toLowerCase() 循环对比 [cite: 43]
-    const { data: existingLead } = await supabase!
-      .from('leads')
-      .select('email')
-      .ilike('email', email)
-      .single();
-
-    if (existingLead) {
-      return NextResponse.json({ error: "You are already on the waitlist!" }, { status: 409 });
-    }
-
-    // --- 2. MX 记录检查 (保持你健壮的校验逻辑) [cite: 45] ---
+    // --- 1. MX 记录检查 ---
     const isValidDomain = await hasValidMxRecord(domain);
     if (!isValidDomain) {
       return NextResponse.json(
@@ -88,19 +76,25 @@ export async function POST(request: Request) {
       );
     }
 
-    // --- 3. 写入数据：Supabase 会自动处理并发安全性 [cite: 47, 50] ---
+    // --- 2. 写入数据（依赖 UNIQUE 约束去重，无需先查询） ---
     const { error: insertError } = await supabase!
       .from('leads')
-      .insert([{ 
+      .insert([{
         email: email,
         role: role,
         tools: tools || null,
         ai_frequency: ai_frequency || null,
         country: country,
         city: city
-      }]); // 存储原始大小写输入 [cite: 39]
+      }]);
 
-    if (insertError) throw insertError;
+    if (insertError) {
+      // PostgreSQL unique violation: email already exists
+      if (insertError.code === '23505') {
+        return NextResponse.json({ error: "You are already on the waitlist!" }, { status: 409 });
+      }
+      throw insertError;
+    }
 
     return NextResponse.json({ message: "Success" }, { status: 200 });
 
