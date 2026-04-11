@@ -4,12 +4,12 @@ import { promises as dns } from 'dns';
 import { createClient } from '@supabase/supabase-js';
 
 // 开发模式检测：如果没有配置数据库，启用开发模式
-const isDevelopmentMode = !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const isDevelopmentMode = !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
 // 初始化 Supabase 客户端（仅在生产模式）
 const supabase = isDevelopmentMode ? null : createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
 );
 
 const SubscribeSchema = z.object({
