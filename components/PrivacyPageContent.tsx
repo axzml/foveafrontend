@@ -21,172 +21,175 @@ export default function PrivacyPageContent() {
           <p className="text-[#555] text-sm mb-12">Last updated: April 2026</p>
 
           <div className="space-y-10 text-[#BBBBBB] text-sm leading-relaxed">
-            <Section title="Overview">
+            <Section title="Introduction">
               <p>
-                Fovea is a macOS application that captures context from your active workspace —
-                including text selections, screenshots, files, and voice input — and assembles
-                them into prompts for AI tools. We are committed to protecting your privacy and
-                being transparent about what data we collect and how we use it.
+                This Privacy Policy describes how Fovea (&quot;Fovea&quot; or &quot;Company&quot;)
+                collects, uses, and handles your personal data when you use our macOS application
+                and related services (collectively, the &quot;Services&quot;). By using the Services,
+                you agree to the practices described in this policy.
               </p>
             </Section>
 
-            <Section title="Data We Collect">
-              <SubSection title="Processed on Your Device">
-                <ul className="list-disc list-inside space-y-2 text-[#999999]">
-                  <li>
-                    <strong className="text-[#BBBBBB]">Microphone audio</strong> — captured for
-                    real-time speech transcription. Audio is sent to a transcription service for
-                    processing and is not retained on our servers after the transcription is complete.
-                  </li>
-                  <li>
-                    <strong className="text-[#BBBBBB]">Active window content</strong> — screen context
-                    such as screenshots, selected text, and URLs from your focused application. When
-                    you use Quick Q&amp;A or Prompt Builder, this data may be sent to our backend
-                    and forwarded to third-party AI providers to fulfill your request. It is not
-                    stored on our servers long-term.
-                  </li>
-                  <li>
-                    <strong className="text-[#BBBBBB]">Browser tab information</strong> — when using
-                    the companion extension, page content may be captured for context and included in
-                    requests to AI providers as part of your prompt.
-                  </li>
-                </ul>
+            <Section title="Information We Collect">
+              <SubSection title="Customer Content You Provide">
+                <p className="text-[#999999]">
+                  Your voice inputs, text selections, screenshots, and other contextual information
+                  are processed in real time by Fovea and/or third-party AI providers to provide the
+                  requested result, and are immediately discarded once the result is returned to your
+                  device. No voice recordings, prompt content, or screen context
+                  data are stored on our servers after processing.
+                </p>
+                <p className="text-[#999999] mt-3">
+                  Your device may store a local session history — including audio, screenshots, and
+                  generated prompts — until you choose to delete it. This local data is not
+                  automatically uploaded to our servers unless you explicitly re-submit a previous
+                  request.
+                </p>
               </SubSection>
 
-              <SubSection title="Stored Locally on Your Device">
-                <ul className="list-disc list-inside space-y-2 text-[#999999]">
-                  <li>
-                    <strong className="text-[#BBBBBB]">History and attachments</strong> — Fovea
-                    saves a local history of your sessions, which may include audio recordings,
-                    screenshots, text selections, and generated prompts. This data is stored on
-                    your device and remains there until you delete it. It is never uploaded to
-                    our servers.
-                  </li>
-                </ul>
+              <SubSection title="Account Information">
+                <p className="text-[#999999]">
+                  When you create an account, we collect your email address for authentication and
+                  usage tracking. We also collect usage metrics such as prompt count and quota usage
+                  to manage your subscription.
+                </p>
               </SubSection>
 
-              <SubSection title="Sent to Our Servers">
-                <ul className="list-disc list-inside space-y-2 text-[#999999]">
-                  <li>
-                    <strong className="text-[#BBBBBB]">Account information</strong> — email address
-                    for authentication and usage tracking.
-                  </li>
-                  <li>
-                    <strong className="text-[#BBBBBB]">Usage metrics</strong> — prompt count and
-                    quota usage to manage your subscription.
-                  </li>
-                  <li>
-                    <strong className="text-[#BBBBBB]">Feedback submissions</strong> — if you choose
-                    to submit feedback through our feedback form.
-                  </li>
-                  <li>
-                    <strong className="text-[#BBBBBB]">AI processing requests</strong> — when you
-                    use Quick Q&amp;A or Prompt Builder, your voice transcription, selected text,
-                    screenshots, and other context may be sent to our backend, which forwards them
-                    to third-party AI providers to generate responses. This data is used only to
-                    fulfill your request and is not stored on our servers after processing.
-                  </li>
-                </ul>
+              <SubSection title="Diagnostic Information">
+                <p className="text-[#999999]">
+                  If you voluntarily submit a diagnostic report, we collect application logs, system
+                  information, and an anonymous identifier to help resolve issues. Diagnostic data
+                  is only uploaded when you manually trigger it. It does not include your voice
+                  recordings, screenshots, prompt content, or any personally identifiable information
+                  beyond the anonymous identifier.
+                </p>
               </SubSection>
+
+              <SubSection title="Usage Data">
+                <p className="text-[#999999]">
+                  We may collect information related to how you interact with the Services, including
+                  device type, app version, and performance metrics. This data is used to improve
+                  the Services and is not linked to your prompt content.
+                </p>
+              </SubSection>
+            </Section>
+
+            <Section title="Use of Data">
+              <p>Fovea uses the information we collect for the following purposes:</p>
+              <ul className="list-disc list-inside space-y-2 text-[#999999] mt-3">
+                <li>
+                  <strong className="text-[#BBBBBB]">Service operation</strong> — Your voice data
+                  and contextual information are processed in real time and are not retained after
+                  delivering results to your device.
+                </li>
+                <li>
+                  <strong className="text-[#BBBBBB]">Account management</strong> — Managing your
+                  subscription, authentication, and usage quotas.
+                </li>
+                <li>
+                  <strong className="text-[#BBBBBB]">Communication</strong> — Responding to support
+                  requests and sending service-related notifications.
+                </li>
+                <li>
+                  <strong className="text-[#BBBBBB]">Improvement</strong> — Analyzing usage patterns
+                  and diagnostic reports to improve the Services.
+                </li>
+                <li>
+                  <strong className="text-[#BBBBBB]">Compliance</strong> — Meeting applicable legal
+                  obligations.
+                </li>
+              </ul>
             </Section>
 
             <Section title="Data We Do NOT Collect">
               <ul className="list-disc list-inside space-y-2 text-[#999999]">
-                <li>We do not retain your screenshots or voice recordings on our servers after processing.</li>
+                <li>Fovea does not retain your voice recordings, screenshots, or prompt content on its servers after processing.</li>
+                <li>Fovea does not use your content to train its own models.</li>
                 <li>We do not track your browsing history.</li>
-                <li>We do not sell or share your personal data with third parties for advertising.</li>
+                <li>We do not sell your data or share it with third parties for advertising.</li>
               </ul>
-              <p className="mt-4 text-[#999999]">
-                Note: your device stores a local session history (which may include audio, screenshots,
-                and text) until you choose to delete it within the app.
-              </p>
             </Section>
 
-            <Section title="Diagnostics and Support Data">
-              <p>
-                Fovea includes an optional diagnostic reporting feature. Diagnostic data is{" "}
-                <strong className="text-[#BBBBBB]">only uploaded when you manually trigger it</strong>{" "}
-                (for example, by using the &quot;Send Diagnostic Report&quot; button).
-              </p>
-              <SubSection title="What is included">
-                <ul className="list-disc list-inside space-y-2 text-[#999999]">
-                  <li>Application logs and system information (macOS version, app version).</li>
-                  <li>An anonymous, hashed user identifier (not your email or name).</li>
-                  <li>Error context relevant to the issue you are reporting.</li>
-                </ul>
-              </SubSection>
-              <SubSection title="What is NOT included">
-                <ul className="list-disc list-inside space-y-2 text-[#999999]">
-                  <li>Your voice recordings, screenshots, or prompt content.</li>
-                  <li>Your browsing history or file contents.</li>
-                  <li>Any personally identifiable information beyond the anonymous hash.</li>
-                </ul>
-              </SubSection>
-              <p className="mt-2 text-[#999999]">
-                Diagnostic reports are sent to{" "}
-                <strong className="text-[#BBBBBB]">Sentry</strong>, a third-party error tracking
-                service, solely for the purpose of improving Fovea&apos;s stability and performance.
-              </p>
+            <Section title="Sharing With Others">
+              <p className="mb-3">We may share your information with the following parties:</p>
+              <ul className="list-disc list-inside space-y-2 text-[#999999]">
+                <li>
+                  <strong className="text-[#BBBBBB]">AI service providers</strong> — When you use
+                  Fovea&apos;s features, your prompt content may be sent to third-party AI providers
+                  to generate responses. These providers process your data under their own terms,
+                  privacy policies, and retention settings. Where provider features intended to
+                  limit data retention are available, Fovea enables them where applicable.
+                </li>
+                <li>
+                  <strong className="text-[#BBBBBB]">Infrastructure providers</strong> — We use
+                  third-party services for authentication, data storage, and error tracking. These
+                  providers have access to your data only to perform tasks on our behalf and are
+                  obligated not to use it for any other purpose.
+                </li>
+                <li>
+                  <strong className="text-[#BBBBBB]">Legal compliance</strong> — We may disclose
+                  information when required by law or to protect our rights.
+                </li>
+              </ul>
             </Section>
 
-            <Section title="Third-Party Services">
-              <p className="mb-4">
-                Fovea integrates with the following categories of third-party services:
-              </p>
-              <SubSection title="AI Providers">
-                <p className="text-[#999999]">
-                  When you use Quick Q&amp;A or Prompt Builder, your prompt content (which may
-                  include text, screenshots, and other context) is sent to AI providers such as
-                  OpenAI, Anthropic, Google, and DeepSeek. Each provider processes your data
-                  according to their own privacy policies.
-                </p>
-              </SubSection>
-              <SubSection title="Authentication and Data Storage">
-                <p className="text-[#999999]">
-                  Fovea uses <strong className="text-[#BBBBBB]">Supabase</strong> for user
-                  authentication, account management, and usage quota tracking. Your email address
-                  and subscription status are stored in Supabase with encryption at rest and in
-                  transit.
-                </p>
-              </SubSection>
-              <SubSection title="Error Tracking">
-                <p className="text-[#999999]">
-                  Fovea uses <strong className="text-[#BBBBBB]">Sentry</strong> for diagnostic
-                  and crash reporting. Diagnostic data is only uploaded when you manually trigger
-                  a report (see &quot;Diagnostics and Support Data&quot; above).
-                </p>
-              </SubSection>
+            <Section title="Retention of Data">
+              <ul className="list-disc list-inside space-y-2 text-[#999999]">
+                <li>
+                  <strong className="text-[#BBBBBB]">Voice and context data</strong> — Processed in
+                  real time and immediately discarded once the result is returned to your device.
+                </li>
+                <li>
+                  <strong className="text-[#BBBBBB]">Local session history</strong> — Stored on your
+                  device until you choose to delete it.
+                </li>
+                <li>
+                  <strong className="text-[#BBBBBB]">Account and billing information</strong> —
+                  Retained as necessary to provide Services, comply with legal obligations, and
+                  resolve disputes.
+                </li>
+                <li>
+                  <strong className="text-[#BBBBBB]">Diagnostic reports</strong> — Retained only as
+                  needed to resolve the reported issue.
+                </li>
+              </ul>
             </Section>
 
             <Section title="Permissions We Request">
               <ul className="list-disc list-inside space-y-2 text-[#999999]">
                 <li>
-                  <strong className="text-[#BBBBBB]">Microphone</strong> — required for voice
-                  transcription.
+                  <strong className="text-[#BBBBBB]">Microphone</strong> — Required for voice input.
                 </li>
                 <li>
-                  <strong className="text-[#BBBBBB]">Accessibility / Apple Events</strong> — required
-                  to read content from your active applications and deliver prompts to AI tools.
+                  <strong className="text-[#BBBBBB]">Accessibility</strong> — Required to read
+                  content from your active applications and deliver results to AI tools.
                 </li>
                 <li>
-                  <strong className="text-[#BBBBBB]">Screen Recording</strong> — required to capture
-                  screenshots of your screen for context collection.
+                  <strong className="text-[#BBBBBB]">Screen Recording</strong> — Required to capture
+                  screen context for your prompts.
                 </li>
               </ul>
             </Section>
 
-            <Section title="Data Security">
+            <Section title="How We Secure Your Information">
               <p>
-                We use Supabase for authentication and data storage, which provides encryption at
-                rest and in transit. Content sent to AI providers is transmitted over HTTPS. Local
-                data on your device is stored in your user-specific application support directory
-                and is accessible only to your macOS user account.
+                We implement technical and organizational safeguards to protect the information we
+                collect from loss, misuse, and unauthorized access. All data in transit is encrypted
+                via HTTPS. However, no method of transmission over the internet is 100% secure.
+              </p>
+            </Section>
+
+            <Section title="Changes to This Privacy Policy">
+              <p>
+                We may update this Privacy Policy from time to time. When we do, we will revise the
+                &quot;Last updated&quot; date at the top of this page. We will notify you of any
+                significant changes that reduce your rights. Changes do not apply retroactively.
               </p>
             </Section>
 
             <Section title="Contact">
               <p>
-                If you have questions about this privacy policy or your data, please reach out
+                If you have questions about this Privacy Policy or your data, please reach out
                 through our{" "}
                 <Link href="/feedback" className="text-[#00FFC2] hover:underline">
                   feedback page
@@ -199,7 +202,7 @@ export default function PrivacyPageContent() {
 
         <footer className="mt-20 text-center">
           <p className="text-[#333] font-mono text-xs tracking-widest">
-            &copy; 2026 FOVEA AI. ALL RIGHTS RESERVED.
+            &copy; 2026 FOVEA. ALL RIGHTS RESERVED.
           </p>
         </footer>
       </div>
