@@ -164,6 +164,17 @@ const Hero = ({ locale, copy, localeLabel, englishLabel, chineseLabel, privacyLi
             {copy.subtitle}
             <span className="text-[#EDEDED]"> {copy.subtitleStrong}</span>
           </p>
+
+          {/* Download CTA */}
+          <Link
+            href={downloadHref}
+            className="mb-8 inline-flex items-center gap-2 rounded-xl border border-[#00FFC2]/40 bg-[#00FFC2]/10 px-6 py-3 text-sm font-semibold text-[#00FFC2] transition-all hover:bg-[#00FFC2]/20 hover:shadow-[0_0_20px_rgba(0,255,194,0.15)]"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+            {copy.approvedLink}
+          </Link>
         </motion.div>
 
         {/* 3. Waitlist Form */}
@@ -285,13 +296,6 @@ const Hero = ({ locale, copy, localeLabel, englishLabel, chineseLabel, privacyLi
                 {privacyLinkLabel}
               </Link>{" "}
               {copy.privacyNoteSuffix}
-            </p>
-
-            <p className="mt-4 text-sm text-[#777] text-center">
-              {copy.approvedPrompt}{" "}
-              <Link href={downloadHref} className="text-[#EDEDED] underline decoration-[#00FFC2]/50 underline-offset-4 hover:text-[#00FFC2]">
-                {copy.approvedLink}
-              </Link>
             </p>
 
             {/* 滚动指示器 - 放在表单内 */}

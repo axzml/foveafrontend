@@ -122,33 +122,32 @@ const siteCopy = {
       badge: "BETA DOWNLOADS",
       title: "Download Fovea for macOS",
       intro:
-        "This page is the stable install entry for approved beta users. First-time installs happen here. Existing users can update directly in the app without re-downloading.",
-      statusNote:
-        "Downloads are not live yet. We are keeping the page in place now so the rollout can switch on without another website update.",
-      macLabel: "macOS App",
+        "Get started with Fovea. Download the macOS app, sign up, and you're ready to go. Existing users receive automatic updates inside the app.",
+      macLabel: "macOS APP",
       macTitle: "Primary beta download",
-      macBody:
-        "The macOS beta download will appear here once rollout begins. Until then, this stays as a placeholder entry point.",
-      macButton: "Download coming soon",
-      macAnnouncement:
-        "The macOS beta download is coming soon. Downloads will open here once the beta rollout is ready.",
-      macFootnote:
-        "Once downloads open, this button will point to the stable beta installer without changing the page URL.",
-      extLabel: "Optional Browser Extension",
-      extTitle: "Companion delivery for web tools",
+      macButton: "Download for macOS",
+      macButtonInactive: "Download coming soon",
+      macVersion: "v0.2.0-beta.7",
+      macRequirements: "macOS 13+",
+      macAutoUpdate: "Auto-updates built in",
+      extTitle: "Fovea Companion Extension",
       extBody:
-        "The Fovea Companion extension will be offered as an optional add-on for browser-based AI workflows. The macOS app remains the primary beta entry point.",
-      extButton: "Extension coming soon",
-      extAnnouncement:
-        "The browser extension is coming soon. Downloads will open here once the beta rollout is ready.",
-      extFootnote:
-        "We will turn this on when browser delivery is included in the beta rollout.",
+        "Optional Chrome extension for delivering prompts directly to ChatGPT, Claude, Gemini, and DeepSeek from your browser.",
+      extButton: "Download Extension",
+      extInstallNote:
+        "After downloading, move the extension folder to a permanent location (e.g. your Documents folder). Open chrome://extensions, enable \"Developer mode\", click \"Load unpacked\" and select the folder. Do not move or delete this folder after loading — Chrome will remove the extension on restart if the source files are missing.",
+      requirementsTitle: "System Requirements",
+      requirements: [
+        "macOS 13 Ventura or later",
+        "Apple Silicon Mac (M1 or later)",
+        "Microphone & screen recording permissions",
+      ],
       expectationsTitle: "What to expect in beta",
       expectations: [
         "Fovea is evolving quickly. UI details and delivery flows may shift between beta releases.",
-        "Automatic updates are built into the macOS app, so most approved users can stay current without manual downloads.",
+        "Automatic updates are built into the macOS app, so you'll stay current without manual re-downloads.",
       ],
-      waitlistPrompt: "Need access but are not approved yet?",
+      waitlistPrompt: "Need access but not approved yet?",
       waitlistLink: "Join the beta waitlist",
     },
     feedback: {
@@ -299,31 +298,30 @@ const siteCopy = {
       badge: "BETA 下载入口",
       title: "下载 Fovea macOS 版本",
       intro:
-        "这里会作为已获批 Beta 用户的稳定安装入口。首次安装走这里；已经安装的用户后续可直接在 App 内更新，无需重新下载。",
-      statusNote:
-        "下载尚未开放。我们先把页面结构预留出来，等准备就绪后可以直接切换上线，而不需要再改官网。",
-      macLabel: "macOS App",
+        "下载 macOS 应用，注册账号即可开始使用。已安装的用户可直接在 App 内自动更新，无需重新下载。",
+      macLabel: "macOS APP",
       macTitle: "主要 Beta 安装包",
-      macBody:
-        "macOS Beta 安装包会在正式开放时出现在这里。在那之前，这里只是预留入口。",
-      macButton: "下载即将开放",
-      macAnnouncement:
-        "macOS Beta 下载即将开放。准备好之后，下载会直接在这里开启。",
-      macFootnote:
-        "开放下载后，这个按钮会切到稳定安装包地址，页面本身不需要再改。",
-      extLabel: "可选浏览器扩展",
-      extTitle: "面向网页工具的投递增强",
+      macButton: "下载 macOS 版本",
+      macButtonInactive: "下载即将开放",
+      macVersion: "v0.2.0-beta.7",
+      macRequirements: "macOS 13+",
+      macAutoUpdate: "内置自动更新",
+      extTitle: "Fovea Companion 浏览器扩展",
       extBody:
-        "Fovea Companion 扩展会作为可选组件提供给浏览器内的 AI 工作流。macOS App 仍然是 Beta 的主入口。",
-      extButton: "扩展即将开放",
-      extAnnouncement:
-        "浏览器扩展即将开放。准备好之后，下载会直接在这里开启。",
-      extFootnote:
-        "当浏览器投递纳入 Beta 范围后，我们会再打开这里。",
-      expectationsTitle: "当前 Beta 阶段说明",
+        "可选的 Chrome 扩展，可将 Prompt 直接投递到 ChatGPT、Claude、Gemini、DeepSeek 等浏览器端 AI 工具。",
+      extButton: "下载扩展",
+      extInstallNote:
+        "下载完成后，请将扩展文件夹移动到固定位置（如「文稿」目录）。然后在 Chrome 中打开 chrome://extensions，开启「开发者模式」，点击「加载已解压的扩展程序」并选择该文件夹。请勿删除或移动此文件夹，否则 Chrome 重启后扩展会丢失。",
+      requirementsTitle: "系统要求",
+      requirements: [
+        "macOS 13 Ventura 或更高版本",
+        "Apple Silicon Mac（M1 或更新）",
+        "需要麦克风和屏幕录制权限",
+      ],
+      expectationsTitle: "Beta 阶段说明",
       expectations: [
-        "Fovea 还在快速迭代中，界面细节和投递流程可能会在不同 Beta 版本之间继续变化。",
-        "macOS App 内已经内置自动更新机制，所以多数已获批用户后续不需要手动下载。",
+        "Fovea 还在快速迭代中，界面细节和投递流程可能会在不同 Beta 版本之间变化。",
+        "macOS App 内置自动更新，后续无需手动重新下载。",
       ],
       waitlistPrompt: "还没有获得资格？",
       waitlistLink: "加入 Beta 等候名单",
