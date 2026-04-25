@@ -55,9 +55,10 @@ export default function TermsPageContent() {
 
             <Section title="4. Our Services">
               <p>
-                Fovea is a macOS application that captures context from your active workspace and
-                assembles it into prompts for AI tools. The Software is currently in beta. Features
-                may change, and the service may be interrupted without prior notice.
+                Fovea is a macOS application that captures user-triggered voice input, selected
+                text, screenshots, and visible screen details, then structures that material for the
+                next tool or workflow. The Software is currently in beta. Features may change, and
+                the service may be interrupted without prior notice.
               </p>
               <p className="mt-3">
                 We grant you a revocable, non-exclusive, non-transferable, limited right to access

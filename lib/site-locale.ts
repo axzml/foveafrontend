@@ -5,7 +5,7 @@ export type Locale = (typeof SUPPORTED_LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "en";
 export const LOCALE_COOKIE_NAME = "fovea_locale";
 
-const zhRouteSet = new Set(["/", "/download", "/feedback"]);
+const zhRouteSet = new Set(["/", "/download", "/feedback", "/pricing"]);
 
 export function isSupportedLocale(value: string | null | undefined): value is Locale {
   return value === "en" || value === "zh";

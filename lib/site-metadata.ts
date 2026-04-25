@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { getSiteCopy } from "./site-copy";
 import type { Locale } from "./site-locale";
 
-type PageKey = "home" | "download" | "feedback" | "privacy";
+type PageKey = "home" | "download" | "feedback" | "pricing" | "privacy";
 
 const canonicalPaths: Record<PageKey, string> = {
   home: "/",
   download: "/download",
   feedback: "/feedback",
+  pricing: "/pricing",
   privacy: "/privacy",
 };
 

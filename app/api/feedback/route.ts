@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     const { type, title, description, contact, locale } = result.data;
 
-    // 自动收集的上下文（与 subscribe/route.ts 保持一致风格）
+    // Automatically collected request metadata, matching subscribe/route.ts.
     const country = request.headers.get('x-vercel-ip-country') || null;
     const userAgent = request.headers.get('user-agent') || null;
 
