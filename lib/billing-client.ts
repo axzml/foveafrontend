@@ -121,8 +121,8 @@ export async function getQuotaStatus(accessToken: string) {
   }
 
   const quota = json?.data || json;
-  if (!quota?.status) {
-    throw new Error("Quota status was missing from the backend response.");
+  if (!quota || typeof quota.plan !== "string") {
+    throw new Error("Quota plan was missing from the backend response.");
   }
 
   return quota;

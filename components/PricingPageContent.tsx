@@ -54,7 +54,7 @@ const faqItems = [
   {
     question: "How do I cancel?",
     answer:
-      "From the Account page inside the Fovea app. You keep Pro until the end of the billing period.",
+      "From your account on hellofovea.com or inside the Fovea Mac app. You keep Pro until the end of the billing period.",
   },
   {
     question: "What counts as a capture?",
