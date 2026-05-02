@@ -1,37 +1,160 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, CircleCheck, Monitor } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  CircleCheck,
+  Download,
+  Loader2,
+} from "lucide-react";
 import SiteFooter from "./SiteFooter";
-import { createBillingPortal } from "../lib/billing-client";
-import { getSupabaseBrowserClient, isSupabaseBrowserConfigured } from "../lib/supabase-browser";
+import {
+  createBillingPortal,
+  getQuotaStatus,
+  type QuotaStatus,
+} from "../lib/billing-client";
+import {
+  getSupabaseBrowserClient,
+  isSupabaseBrowserConfigured,
+} from "../lib/supabase-browser";
+
+function formatDate(value?: string) {
+  if (!value) {
+    return null;
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+  return new Intl.DateTimeFormat("en", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
+
+function formatDuration(seconds: number) {
+  if (!Number.isFinite(seconds) || seconds <= 0) {
+    return "0m";
+  }
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  if (hours > 0 && minutes > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  if (hours > 0) {
+    return `${hours}h`;
+  }
+  return `${Math.max(1, minutes)}m`;
+}
+
+function subscriptionLine(quota: QuotaStatus | null) {
+  if (!quota) {
+    return "Loading subscription...";
+  }
+
+  const date = formatDate(quota.status_at || quota.billing_period_end);
+  switch (quota.status_kind) {
+    case "renews":
+      return date ? `Renews on ${date}` : "Active subscription";
+    case "pro_until":
+      return date ? `Pro until ${date}` : "Pro remains active for this billing period";
+    case "payment_failed":
+      return "Payment failed - update your card";
+    case "manual_pro":
+      return date ? `Manual Pro access until ${date}` : "Manual Pro access";
+    case "free":
+    default:
+      return "Limited captures and basic features";
+  }
+}
+
+function planLabel(quota: QuotaStatus | null) {
+  return quota?.plan === "pro" || quota?.is_pro ? "Pro" : "Free";
+}
 
 export default function AccountPageContent() {
   const [email, setEmail] = useState(() =>
     isSupabaseBrowserConfigured() ? "Loading..." : "Supabase auth is not configured",
   );
+  const [displayName, setDisplayName] = useState("Fovea user");
   const [initial, setInitial] = useState("F");
+  const [quota, setQuota] = useState<QuotaStatus | null>(null);
+  const [isQuotaLoading, setIsQuotaLoading] = useState(true);
   const [isPortalLoading, setIsPortalLoading] = useState(false);
+  const [accountError, setAccountError] = useState<string | null>(null);
   const [billingError, setBillingError] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
     if (!supabase) {
+      setIsQuotaLoading(false);
       return;
     }
 
-    supabase.auth.getSession().then(({ data }) => {
-      const userEmail = data.session?.user.email;
-      if (!data.session || !userEmail) {
+    const client = supabase;
+    let cancelled = false;
+
+    async function loadAccount() {
+      const {
+        data: { session },
+      } = await client.auth.getSession();
+
+      const userEmail = session?.user.email;
+      if (!session || !userEmail) {
         window.location.replace("/login?next=/account");
         return;
       }
 
+      if (cancelled) {
+        return;
+      }
+
+      const name =
+        typeof session.user.user_metadata?.full_name === "string"
+          ? session.user.user_metadata.full_name
+          : "Fovea user";
+
       setEmail(userEmail);
-      setInitial(userEmail.slice(0, 1).toUpperCase());
-    });
+      setDisplayName(name);
+      setInitial((name || userEmail).slice(0, 1).toUpperCase());
+
+      try {
+        const nextQuota = await getQuotaStatus(session.access_token);
+        if (!cancelled) {
+          setQuota(nextQuota);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setAccountError(
+            err instanceof Error ? err.message : "Unable to load subscription status.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsQuotaLoading(false);
+        }
+      }
+    }
+
+    loadAccount();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  const isPro = quota?.plan === "pro" || quota?.is_pro;
+  const isPaymentFailed = quota?.status_kind === "payment_failed";
+  const usagePercent = useMemo(() => {
+    if (!quota?.limit) {
+      return 0;
+    }
+    return Math.min(100, Math.max(0, (quota.used / quota.limit) * 100));
+  }, [quota]);
 
   async function handleSignOut() {
     const supabase = getSupabaseBrowserClient();
@@ -75,7 +198,6 @@ export default function AccountPageContent() {
   return (
     <main className="min-h-screen bg-[#F7F8F4] px-5 py-5 text-[#111315] selection:bg-[#12B886]/20 selection:text-[#111315] sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        {/* ── Header ── */}
         <header className="flex items-center justify-between gap-4 rounded-2xl border border-[#DDE4DC] bg-white/85 px-4 py-3 shadow-[0_10px_30px_rgba(17,19,21,0.05)] backdrop-blur">
           <Link
             href="/"
@@ -94,7 +216,6 @@ export default function AccountPageContent() {
           </button>
         </header>
 
-        {/* ── User header ── */}
         <section className="flex flex-wrap items-center gap-4 py-12">
           <div className="grid h-14 w-14 place-items-center rounded-full bg-[#0D8F69]">
             <span className="text-lg font-semibold text-white">{initial}</span>
@@ -106,156 +227,164 @@ export default function AccountPageContent() {
           </div>
 
           <div className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-[#C8D6CE] bg-white px-3 py-1.5">
-            <CircleCheck className="h-4 w-4 text-[#0D8F69]" />
+            {isQuotaLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-[#88938C]" />
+            ) : isPaymentFailed ? (
+              <AlertCircle className="h-4 w-4 text-[#B54747]" />
+            ) : (
+              <CircleCheck className="h-4 w-4 text-[#0D8F69]" />
+            )}
             <span className="text-xs font-medium text-[#111315]">
-              Beta access
+              {isQuotaLoading ? "Loading" : planLabel(quota)}
             </span>
           </div>
         </section>
 
-        {/* ── Plan + Devices ── */}
-        <div className="grid gap-5 lg:grid-cols-3">
-          {/* Plan card */}
-          <div className="rounded-[24px] border border-[#DDE4DC] bg-white p-7 lg:col-span-2">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-[#88938C]">
-                  Plan
-                </p>
-                <h2 className="mt-1 text-2xl font-semibold text-[#111315]">
-                  Beta &mdash; open access
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-[#5A665F]">
-                  Your subscription state is synced from Stripe through the Fovea backend.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  href="/pricing"
-                  className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#111315] px-4 text-sm font-semibold text-white transition hover:bg-[#222]"
-                >
-                  See plans
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <button
-                  type="button"
-                  onClick={handleBillingPortal}
-                  disabled={isPortalLoading}
-                  className="inline-flex h-10 items-center rounded-xl border border-[#D8E1DA] bg-white px-4 text-sm font-semibold text-[#111315] transition hover:border-[#AFC2B5] disabled:cursor-not-allowed disabled:opacity-70"
-                >
-                  {isPortalLoading ? "Opening..." : "Manage billing"}
-                </button>
-              </div>
-            </div>
+        {accountError && (
+          <p className="mb-5 rounded-2xl border border-[#F0D6D6] bg-[#FFF8F8] px-5 py-4 text-sm leading-6 text-[#A43B3B]">
+            {accountError}
+          </p>
+        )}
 
-            {billingError && (
-              <p className="mt-4 rounded-xl border border-[#F0D6D6] bg-[#FFF8F8] px-4 py-3 text-sm leading-6 text-[#A43B3B]">
-                {billingError}
-              </p>
-            )}
-
-            <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-[#88938C]">
-                  Status
-                </p>
-                <p className="mt-1 font-semibold text-[#111315]">Active</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-[#88938C]">
-                  Captures this month
-                </p>
-                <p className="mt-1 font-semibold text-[#111315]">142</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-[#88938C]">
-                  Member since
-                </p>
-                <p className="mt-1 font-semibold text-[#111315]">Jan 2026</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-[#88938C]">
-                  Next billing
-                </p>
-                <p className="mt-1 font-semibold text-[#111315]">&mdash;</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Devices card */}
-          <div className="rounded-[24px] border border-[#DDE4DC] bg-white p-7">
-            <div className="flex items-center justify-between">
+        <section className="rounded-[24px] border border-[#DDE4DC] bg-white p-7">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
               <p className="text-xs font-medium uppercase tracking-wider text-[#88938C]">
-                Devices
+                Subscription
               </p>
-              <Link
-                href="/download"
-                className="text-sm font-medium text-[#0D8F69] transition hover:text-[#0A7356]"
+              <h2 className="mt-1 text-3xl font-semibold text-[#111315]">
+                {isQuotaLoading ? "Checking plan..." : planLabel(quota)}
+              </h2>
+              <p
+                className={`mt-2 text-sm leading-6 ${
+                  isPaymentFailed ? "text-[#A43B3B]" : "text-[#5A665F]"
+                }`}
               >
-                Get the app
-              </Link>
+                {subscriptionLine(quota)}
+              </p>
             </div>
 
-            <div className="mt-4 flex items-center gap-3 rounded-xl border border-[#DDE4DC] bg-[#F8FAF7] p-3">
-              <Monitor className="h-5 w-5 shrink-0 text-[#0D8F69]" />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-[#111315]">
-                  Alex&apos;s MacBook Pro
-                </p>
-                <p className="text-xs text-[#88938C]">macOS &middot; Active 2h ago</p>
-              </div>
+            {isPro ? (
               <button
                 type="button"
-                className="shrink-0 text-xs font-medium text-[#88938C] transition hover:text-[#C53D3D]"
+                onClick={handleBillingPortal}
+                disabled={
+                  isPortalLoading ||
+                  isQuotaLoading ||
+                  Boolean(quota && !quota.manage_billing_available)
+                }
+                className="inline-flex h-11 items-center rounded-xl border border-[#D8E1DA] bg-white px-5 text-sm font-semibold text-[#111315] transition hover:border-[#AFC2B5] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Remove
+                {isPortalLoading ? "Opening..." : "Manage billing"}
               </button>
+            ) : (
+              <Link
+                href="/pricing"
+                className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#111315] px-5 text-sm font-semibold text-white transition hover:bg-[#222]"
+              >
+                Upgrade to Pro
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            )}
+          </div>
+
+          {billingError && (
+            <p className="mt-4 rounded-xl border border-[#F0D6D6] bg-[#FFF8F8] px-4 py-3 text-sm leading-6 text-[#A43B3B]">
+              {billingError}
+            </p>
+          )}
+
+          <div className="mt-7 grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-[#E3E9E5] bg-[#F8FAF7] p-4">
+              <p className="text-xs font-medium uppercase tracking-wider text-[#88938C]">
+                Status
+              </p>
+              <p className="mt-1 font-semibold text-[#111315]">
+                {isQuotaLoading ? "Loading" : subscriptionLine(quota)}
+              </p>
             </div>
 
-            <p className="mt-4 text-xs leading-5 text-[#88938C]">
-              Up to 3 devices on Pro. 1 device on Free.
-            </p>
-          </div>
-        </div>
+            <div className="rounded-2xl border border-[#E3E9E5] bg-[#F8FAF7] p-4">
+              <p className="text-xs font-medium uppercase tracking-wider text-[#88938C]">
+                Usage
+              </p>
+              <p className="mt-1 font-semibold text-[#111315]">
+                {quota
+                  ? `${formatDuration(quota.used)} used`
+                  : isQuotaLoading
+                    ? "Loading"
+                    : "Unavailable"}
+              </p>
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#E2E9E3]">
+                <div
+                  className="h-full rounded-full bg-[#0D8F69]"
+                  style={{ width: `${usagePercent}%` }}
+                />
+              </div>
+              {quota && (
+                <p className="mt-2 text-xs text-[#6A756E]">
+                  {formatDuration(quota.remaining)} remaining
+                </p>
+              )}
+            </div>
 
-        {/* ── Profile + Billing ── */}
+            <div className="rounded-2xl border border-[#E3E9E5] bg-[#F8FAF7] p-4">
+              <p className="text-xs font-medium uppercase tracking-wider text-[#88938C]">
+                Billing
+              </p>
+              <p className="mt-1 font-semibold text-[#111315]">
+                {quota?.manage_billing_available
+                  ? "Managed in Stripe"
+                  : isPro
+                    ? "No paid billing attached"
+                    : "No active subscription"}
+              </p>
+            </div>
+          </div>
+        </section>
+
         <div className="mt-5 grid gap-5 lg:grid-cols-2">
-          {/* Profile card */}
-          <div className="rounded-[24px] border border-[#DDE4DC] bg-white p-7">
+          <section className="rounded-[24px] border border-[#DDE4DC] bg-white p-7">
             <h3 className="text-lg font-semibold text-[#111315]">Profile</h3>
 
             <div className="mt-5 space-y-0">
               <div className="flex items-center justify-between border-b border-[#EFF1ED] py-3 text-sm">
                 <span className="text-[#5A665F]">Display name</span>
-                <span className="font-medium text-[#111315]">Fovea user</span>
+                <span className="font-medium text-[#111315]">{displayName}</span>
               </div>
               <div className="flex items-center justify-between border-b border-[#EFF1ED] py-3 text-sm">
                 <span className="text-[#5A665F]">Email</span>
-                <span className="font-medium text-[#111315]">
-                  {email}
-                </span>
+                <span className="font-medium text-[#111315]">{email}</span>
               </div>
               <div className="flex items-center justify-between py-3 text-sm">
                 <span className="text-[#5A665F]">Sign-in method</span>
                 <span className="font-medium text-[#111315]">Magic link / OAuth</span>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Billing & usage card */}
-          <div className="rounded-[24px] border border-[#DDE4DC] bg-white p-7">
-            <h3 className="text-lg font-semibold text-[#111315]">
-              Billing &amp; usage
-            </h3>
+          <section className="rounded-[24px] border border-[#DDE4DC] bg-white p-7">
+            <h3 className="text-lg font-semibold text-[#111315]">Account actions</h3>
 
             <div className="mt-5 space-y-0">
               <div className="flex items-center justify-between border-b border-[#EFF1ED] py-3 text-sm">
-                <span className="text-[#5A665F]">Payment method</span>
-                <span className="font-medium text-[#111315]">Not added</span>
+                <span className="text-[#5A665F]">Mac app</span>
+                <Link
+                  href="/download"
+                  className="inline-flex items-center gap-2 font-medium text-[#0D8F69] transition hover:text-[#0A7356]"
+                >
+                  <Download className="h-4 w-4" />
+                  Download
+                </Link>
               </div>
               <div className="flex items-center justify-between border-b border-[#EFF1ED] py-3 text-sm">
-                <span className="text-[#5A665F]">Invoices</span>
-                <span className="font-medium text-[#111315]">&mdash;</span>
+                <span className="text-[#5A665F]">Refunds or billing help</span>
+                <Link
+                  href="/feedback"
+                  className="font-medium text-[#0D8F69] transition hover:text-[#0A7356]"
+                >
+                  Contact support
+                </Link>
               </div>
               <div className="flex items-center justify-between py-3 text-sm">
                 <span className="text-[#5A665F]">Delete account</span>
@@ -267,7 +396,7 @@ export default function AccountPageContent() {
                 </Link>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </div>
 

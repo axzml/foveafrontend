@@ -110,10 +110,10 @@ export default function TermsPageContent() {
 
             <LegalSection title="8. Paid Services">
               <p className="mt-3">
-                Free trial and subscription terms are displayed within the
-                application. Usage quotas apply based on your plan. You may
-                cancel your subscription at any time. Fee changes take effect at
-                the next renewal period with reasonable notice.
+                Free and paid plan terms are displayed within the application
+                and on the Fovea website. Usage quotas apply based on your plan.
+                You may cancel your subscription at any time. Fee changes take
+                effect at the next renewal period with reasonable notice.
               </p>
             </LegalSection>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, Lock, Sparkles, Info } from "lucide-react";
 import SiteFooter from "./SiteFooter";
@@ -70,10 +70,14 @@ export default function CheckoutPageContent({
 }: CheckoutPageContentProps) {
   const [cycle, setCycle] = useState<BillingCycle>(initialCycle);
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [noticeMessage, setNoticeMessage] = useState<string | null>(initialNotice);
+  const [noticeMessage, setNoticeMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const selected = cycleOptions.find((o) => o.id === cycle)!;
+
+  useEffect(() => {
+    setNoticeMessage(initialNotice);
+  }, [initialNotice]);
 
   async function handleCheckout() {
     setNoticeMessage(null);

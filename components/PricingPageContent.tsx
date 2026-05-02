@@ -44,12 +44,12 @@ const faqItems = [
   {
     question: "When does paid billing start?",
     answer:
-      "Paid plans will be introduced with advance notice. Until then, the macOS beta is open to use.",
+      "Early-bird pricing is available during the beta rollout. Existing beta users will receive advance notice before any plan change affects their account.",
   },
   {
-    question: "Is there a free trial of Pro?",
+    question: "Is there a Free plan?",
     answer:
-      "When billing turns on, every new account starts on a 30-day Pro trial. After that, you switch to Free unless you upgrade.",
+      "Yes. Free includes 50 captures per week with voice, text, and image input. Pro removes the weekly capture limit and adds advanced delivery features.",
   },
   {
     question: "How do I cancel?",
