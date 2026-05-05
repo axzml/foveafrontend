@@ -13,8 +13,8 @@ import {
 import SiteFooter from "./SiteFooter";
 import {
   createBillingPortal,
-  getQuotaStatus,
-  type QuotaStatus,
+  getBillingStatus,
+  type BillingStatus,
 } from "../lib/billing-client";
 import {
   getSupabaseBrowserClient,
@@ -51,7 +51,7 @@ function formatDuration(seconds: number) {
   return `${Math.max(1, minutes)}m`;
 }
 
-function subscriptionLine(quota: QuotaStatus | null) {
+function subscriptionLine(quota: BillingStatus | null) {
   if (!quota) {
     return "Loading subscription...";
   }
@@ -64,15 +64,13 @@ function subscriptionLine(quota: QuotaStatus | null) {
       return date ? `Pro until ${date}` : "Pro remains active for this billing period";
     case "payment_failed":
       return "Payment failed - update your card";
-    case "manual_pro":
-      return date ? `Manual Pro access until ${date}` : "Manual Pro access";
     case "free":
     default:
       return "Limited captures and basic features";
   }
 }
 
-function planLabel(quota: QuotaStatus | null) {
+function planLabel(quota: BillingStatus | null) {
   return quota?.plan === "pro" || quota?.is_pro ? "Pro" : "Free";
 }
 
@@ -82,7 +80,7 @@ export default function AccountPageContent() {
   );
   const [displayName, setDisplayName] = useState("Fovea user");
   const [initial, setInitial] = useState("F");
-  const [quota, setQuota] = useState<QuotaStatus | null>(null);
+  const [quota, setQuota] = useState<BillingStatus | null>(null);
   const [isQuotaLoading, setIsQuotaLoading] = useState(true);
   const [isPortalLoading, setIsPortalLoading] = useState(false);
   const [accountError, setAccountError] = useState<string | null>(null);
@@ -123,7 +121,7 @@ export default function AccountPageContent() {
       setInitial((name || userEmail).slice(0, 1).toUpperCase());
 
       try {
-        const nextQuota = await getQuotaStatus(session.access_token);
+        const nextQuota = await getBillingStatus(session.access_token);
         if (!cancelled) {
           setQuota(nextQuota);
         }

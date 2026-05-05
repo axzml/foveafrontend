@@ -12,30 +12,28 @@ type CheckoutResponse = {
   url?: string;
 };
 
-export type QuotaStatus = {
-  status: string;
+// BillingStatus mirrors the backend's BillingStatusResponse (see
+// models/request.go on the Go side). The shape is the contract the Web
+// account page consumes; mac uses the leaner /api/quota/check.
+//
+// Design notes (mirror Go-side comments):
+//   - No raw `subscription_status` / `trial_ends_at` / `pro_expires_at`:
+//     UI consumes only `status_kind`, raw values bypass the derivation
+//     layer and would fork business rules into two repos.
+//   - No `manual_entitlement*` fields: the feature isn't built yet, so
+//     the contract doesn't pretend it exists. Add when DB schema lands.
+export type BillingStatus = {
   is_pro: boolean;
   remaining: number;
   used: number;
   limit: number;
-  trial_ends_at?: string;
-  pro_expires_at?: string;
+
   plan: "free" | "pro";
-  status_kind:
-    | "free"
-    | "renews"
-    | "pro_until"
-    | "payment_failed"
-    | "manual_pro"
-    | string;
+  status_kind: "free" | "renews" | "pro_until" | "payment_failed";
   status_at?: string;
-  subscription_status?: string;
   cancel_at_period_end: boolean;
   billing_period_end?: string;
   manage_billing_available: boolean;
-  manual_entitlement: boolean;
-  manual_entitlement_end?: string;
-  manual_entitlement_reason?: string;
 };
 
 export function getBackendBaseUrl() {
@@ -102,8 +100,8 @@ export async function createBillingPortal(accessToken: string) {
   return url;
 }
 
-export async function getQuotaStatus(accessToken: string) {
-  const response = await fetch(`${getBackendBaseUrl()}/api/quota/check`, {
+export async function getBillingStatus(accessToken: string): Promise<BillingStatus> {
+  const response = await fetch(`${getBackendBaseUrl()}/api/billing/status`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -112,7 +110,7 @@ export async function getQuotaStatus(accessToken: string) {
   });
 
   const json = (await response.json().catch(() => null)) as
-    | (ApiSuccess<QuotaStatus> & QuotaStatus & { error?: string; message?: string })
+    | (ApiSuccess<BillingStatus> & BillingStatus & { error?: string; message?: string })
     | null;
 
   if (!response.ok) {
@@ -120,10 +118,13 @@ export async function getQuotaStatus(accessToken: string) {
     throw new Error(message);
   }
 
-  const quota = json?.data || json;
-  if (!quota || typeof quota.plan !== "string") {
-    throw new Error("Quota plan was missing from the backend response.");
+  // Backend wraps responses in {code, data}; older bare-payload responses are
+  // not produced by /api/billing/status, but we tolerate both shapes for
+  // resilience to envelope drift.
+  const status = (json?.data ?? json) as BillingStatus | null;
+  if (!status || typeof status.plan !== "string") {
+    throw new Error("Billing status was missing from the backend response.");
   }
 
-  return quota;
+  return status;
 }
