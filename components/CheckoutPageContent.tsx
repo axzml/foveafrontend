@@ -38,9 +38,10 @@ const cycleOptions: {
     id: "monthly",
     label: "Monthly",
     badge: "Save 33%",
-    badgeClass: "bg-[#F1F4EE] text-[#5F6A63]",
+    badgeClass: "bg-[#E9F8F2] text-[#0D8F69]",
     regularPricePerMonth: "$30",
     pricePerMonth: "$20",
+    billedNote: "Billed monthly at $20 USD",
     regularTotal: "$30",
     total: "$20",
   },
@@ -177,7 +178,8 @@ export default function CheckoutPageContent({
               Choose your billing cycle
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5A665F]">
-              Early-bird pricing: $15/month becomes $9 with annual billing; $30/month becomes $20 monthly.
+              Early-bird pricing applies to both billing cycles: yearly is $9/month
+              when billed annually, and monthly is $20/month.
             </p>
 
             <div className="mt-8 space-y-4">
@@ -192,13 +194,13 @@ export default function CheckoutPageContent({
                         : "border-[#E3E9E5] bg-white hover:border-[#C8D6CE]"
                     }`}
                   >
-                    {option.id === "yearly" && (
+                    {option.badge && (
                       <span className="absolute -top-3 left-5 rounded-full bg-[#0D8F69] px-3 py-1 text-xs font-semibold text-white">
                         Early bird
                       </span>
                     )}
 
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-center gap-3">
                         <input
                           type="radio"
@@ -208,7 +210,7 @@ export default function CheckoutPageContent({
                           onChange={() => setCycle(option.id)}
                           className="h-4 w-4 accent-[#0D8F69]"
                         />
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span className="text-base font-semibold text-[#111315]">
                             {option.label}
                           </span>
@@ -222,7 +224,7 @@ export default function CheckoutPageContent({
                         </div>
                       </div>
 
-                      <div className="text-right">
+                      <div className="text-left sm:text-right">
                         <div className="text-base font-semibold text-[#111315]">
                           <span className="mr-2 text-sm font-medium text-[#8A958E] line-through">
                             {option.regularPricePerMonth}
@@ -230,9 +232,7 @@ export default function CheckoutPageContent({
                           {option.pricePerMonth}{" "}
                           <span className="text-sm font-normal text-[#6A756E]">USD / month</span>
                         </div>
-                        {option.billedNote && (
-                          <p className="mt-0.5 text-xs text-[#6A756E]">{option.billedNote}</p>
-                        )}
+                        <p className="mt-0.5 text-xs text-[#6A756E]">{option.billedNote}</p>
                       </div>
                     </div>
                   </label>

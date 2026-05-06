@@ -110,7 +110,7 @@ export default function PricingPageContent() {
             One price. Every modality. Every model.
           </h1>
           <p className="mt-5 text-lg leading-8 text-[#5A665F]">
-            Lock in the early-bird annual price before paid billing turns on.
+            Lock in early-bird beta pricing before paid billing turns on.
           </p>
         </motion.section>
 
@@ -134,19 +134,18 @@ export default function PricingPageContent() {
               </span>
             </div>
 
-            <div className="mt-8">
+            <div className="mt-8 min-h-[132px]">
               <div className="flex items-baseline gap-3">
                 <span className="text-2xl font-semibold text-[#8A958E] line-through">$15</span>
                 <span className="text-6xl font-semibold tracking-tight text-[#111315]">$9</span>
                 <span className="text-sm text-[#6A756E]">USD</span>
               </div>
               <p className="mt-1 text-sm text-[#6A756E]">/ member / month, billed yearly</p>
-            </div>
 
-            <p className="mt-3 text-sm text-[#6A756E]">
-              Early-bird annual price. Monthly is <span className="line-through">$30</span>{" "}
-              $20.
-            </p>
+              <p className="mt-3 text-sm text-[#6A756E]">
+                Early-bird beta price. Yearly is $9/month; monthly is $20/month.
+              </p>
+            </div>
 
             <Link
               href="/checkout"
@@ -184,18 +183,16 @@ export default function PricingPageContent() {
               <p className="mt-1 text-sm text-[#5F6A63]">For beginners</p>
             </div>
 
-            <div className="mt-8">
+            <div className="mt-8 min-h-[132px]">
               <span className="text-6xl font-semibold tracking-tight text-[#111315]">$0</span>
               <span className="ml-2 text-sm text-[#6A756E]">USD</span>
               <p className="mt-1 text-sm text-[#6A756E]">/ member / month</p>
+              <p className="mt-3 text-sm text-[#6A756E]">
+                Free forever. Download the Mac app and sign in.
+              </p>
             </div>
 
-            <Link
-              href="/login?next=/account"
-              className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-[#D8E1DA] bg-white px-5 py-3 text-sm font-semibold text-[#111315] transition hover:border-[#AFC2B5]"
-            >
-              Start free
-            </Link>
+            <div className="mt-8 h-[48px]" aria-hidden="true" />
 
             <div className="mt-8 h-px bg-[#E3E9E5]" />
 
